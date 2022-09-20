@@ -7,7 +7,7 @@ import math
 import sys
 
  
-class handTracker():
+class handDetector():
     def __init__(self, mode=False, max_hands=2, model_c = 1, detection_con=0.5, track_con=0.5):
         self.mode = mode
         self.max_hands = max_hands
@@ -19,7 +19,7 @@ class handTracker():
         self.hands = self.mp_hands.Hands(self.mode, self.max_hands, self.model_c,
                                         self.detection_con, self.track_con)
         self.mp_draw = mp.solutions.drawing_utils
-        self.tipIds = [4, 8, 12, 16, 20]
+        self.tip_ids = [4, 8, 12, 16, 20]
  
     def findHands(self, img, draw=True):
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -60,16 +60,21 @@ class handTracker():
     def fingersUp(self):
         fingers = []
         # Thumb
-        if self.lms[self.tipIds[0]][1] > self.lms[self.tipIds[0] - 1][1]:
-            fingers.append(1)
-        else:
-            fingers.append(0)
-        # Fingers
-        for id in range(1, 5):
- 
-            if self.lms[self.tipIds[id]][2] < self.lms[self.tipIds[id] - 2][2]:
+        try:
+            if self.lms[self.tip_ids[0]][1] > self.lms[self.tip_ids[0] - 1][1]:
                 fingers.append(1)
             else:
+                fingers.append(0)
+        except:
+           fingers.append(0)
+        # Fingers
+        for id in range(1, 5):
+            try:
+                if self.lms[self.tip_ids[id]][2] < self.lms[self.tip_ids[id] - 2][2]:
+                    fingers.append(1)
+                else:
+                    fingers.append(0)
+            except:
                 fingers.append(0)
         # totalFingers = fingers.count(1)
         return fingers
@@ -91,13 +96,13 @@ def main():
     p_time = 0
     c_time = 0
     cap = cv2.VideoCapture(0)
-    detector = handTracker()
+    detector = handDetector()
     while True:
         success, img = cap.read()
         img = detector.findHands(img)
         lms, b_box = detector.findPosition(img)
-        if len(lms) != 0:
-            print(lms[4])
+        # if len(lms) != 0:
+        #     print(lms[4])
         c_time = time.time()
         fps = 1 / (c_time - p_time)
         p_time = c_time

@@ -19,7 +19,7 @@ def main():
     plocX, plocY = 0, 0
     clocX, clocY = 0, 0
     
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     cap.set(3, w_cam)
     cap.set(4, h_cam)
     detector = ht.handDetector(max_hands=1)
@@ -60,7 +60,7 @@ def main():
         if fingers[1] == 1 and fingers[2] == 1:
             # 9. Find distance between fingers
             length, img, lineInfo = detector.findDistance(8, 12, img)
-            print(length)
+            # print(length)
             # 10. Click mouse if distance short
             if length < 40:
                 cv2.circle(img, (lineInfo[4], lineInfo[5]),
