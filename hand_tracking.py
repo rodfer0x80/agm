@@ -8,15 +8,16 @@ import sys
 
  
 class handTracker():
-    def __init__(self, mode=False, max_hands=2, detectionCon=0.5, track_con=0.5):
+    def __init__(self, mode=False, max_hands=2, model_c = 1, detection_con=0.5, track_con=0.5):
         self.mode = mode
         self.max_hands = max_hands
-        self.detectionCon = detectionCon
+        self.model_c = model_c
+        self.detection_con = detection_con
         self.track_con = track_con
  
         self.mp_hands = mp.solutions.hands
-        self.hands = self.mp_hands.Hands(self.mode, self.max_hands,
-                                        self.detectionCon, self.track_con)
+        self.hands = self.mp_hands.Hands(self.mode, self.max_hands, self.model_c,
+                                        self.detection_con, self.track_con)
         self.mp_draw = mp.solutions.drawing_utils
         self.tipIds = [4, 8, 12, 16, 20]
  
@@ -89,7 +90,7 @@ class handTracker():
 def main():
     p_time = 0
     c_time = 0
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     detector = handTracker()
     while True:
         success, img = cap.read()
