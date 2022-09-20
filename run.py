@@ -5,13 +5,13 @@ import sys
 
 def main():
     if len(sys.argv) != 2:
-        return 1
+        main_module = "virtual_mouse.py"
     cdir = "."
     #dirs = __file__.split("/")[1:-1]
     #cdir = ""
     #for d in dirs:
     #    cdir = f"{cdir}/{d}"
-    cmd = f"source {cdir}/venv/bin/activate && python {cdir}/{sys.argv[1]}"
+    cmd = f"source {cdir}/venv/bin/activate && python {cdir}/src/{main_module}"
     os.system(cmd)
     return 0
 
