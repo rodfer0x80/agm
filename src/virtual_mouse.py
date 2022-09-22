@@ -8,7 +8,8 @@ import autopy
 import time
 import sys
 
- 
+DEBUG = False
+
 def main():
     ##########################
     w_cam, h_cam = 640, 480
@@ -25,7 +26,8 @@ def main():
     cap.set(4, h_cam)
     detector = ht.handDetector(max_hands=1)
     wScr, hScr = autopy.screen.size()
-    # print(wScr, hScr)
+    if DEBUG:
+        print(wScr, hScr)
     try:
         while True:
             # 1. Find hand Landmarks
@@ -36,13 +38,15 @@ def main():
             if len(lmList) != 0:
                 x1, y1 = lmList[8][1:]
                 x2, y2 = lmList[12][1:]
-                # print(x1, y1, x2, y2)
+                if DEBUG:
+                    print(x1, y1, x2, y2)
             
             # 3. Check which fingers are up
             fingers = detector.fingersUp()
-            # print(fingers)
-            cv2.rectangle(img, (frameR, frameR), (w_cam - frameR, h_cam - frameR),
-            (255, 0, 255), 2)
+            if DEBUG:
+                print(fingers)
+                cv2.rectangle(img, (frameR, frameR), (w_cam - frameR, h_cam - frameR),
+                    (255, 0, 255), 2)
             # 4. Only Index Finger : Moving Mode
             if fingers[1] == 1 and fingers[2] == 0:
                 # 5. Convert Coordinates
@@ -54,29 +58,34 @@ def main():
             
                 # 7. Move Mouse
                 autopy.mouse.move(wScr - clocX, clocY)
-                cv2.circle(img, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
+                if DEBUG:
+                    cv2.circle(img, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
                 plocX, plocY = clocX, clocY
                 
             # 8. Both Index and middle fingers are up : Clicking Mode
             if fingers[1] == 1 and fingers[2] == 1:
                 # 9. Find distance between fingers
                 length, img, lineInfo = detector.findDistance(8, 12, img)
-                # print(length)
+                if DEBUG:
+                    print(length)
                 # 10. Click mouse if distance short
                 if length < 40:
-                    cv2.circle(img, (lineInfo[4], lineInfo[5]),
-                    15, (0, 255, 0), cv2.FILLED)
+                    if DEBUG:
+                        cv2.circle(img, (lineInfo[4], lineInfo[5]),
+                            15, (0, 255, 0), cv2.FILLED)
                     autopy.mouse.click()
             
             # 11. Frame Rate
             c_time = time.time()
             fps = 1 / (c_time - p_time)
             p_time = c_time
-            cv2.putText(img, str(int(fps)), (20, 50), cv2.FONT_HERSHEY_PLAIN, 3,
-            (255, 0, 0), 3)
+            if DEBUG:
+                cv2.putText(img, str(int(fps)), (20, 50), cv2.FONT_HERSHEY_PLAIN, 3,
+                    (255, 0, 0), 3)
             # 12. Display
-            cv2.imshow("Image", img)
-            cv2.waitKey(1)
+            if DEBUG:
+                cv2.imshow("Image", img)
+                cv2.waitKey(1)
     except KeyboardInterrupt:
         return 0
     return 0
