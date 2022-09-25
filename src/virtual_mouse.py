@@ -74,7 +74,8 @@ def main():
                         cv2.circle(img, (lineInfo[4], lineInfo[5]),
                             15, (0, 255, 0), cv2.FILLED)
                     autopy.mouse.click()
-            
+                    fingers[1] = 0
+                    fingers[2] = 0          
             # 11. Frame Rate
             c_time = time.time()
             fps = 1 / (c_time - p_time)
