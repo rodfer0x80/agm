@@ -13,8 +13,8 @@ def main():
     #cdir = ""
     #for d in dirs:
     #    cdir = f"{cdir}/{d}"
-    cmd = f"source {cdir}/venv/bin/activate && echo 'False' > src/.env &&\
-            python {cdir}/{main_module}"
+    cmd = f"source {cdir}/venv/bin/activate && echo 'True' > src/.env &&\
+            python {cdir}/{main_module} > debug.log 2>&1"
     os.system(cmd)
     return 0
 

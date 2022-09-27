@@ -9,12 +9,17 @@ import time
 import sys
 
 DEBUG = False
+try:
+    with open(".env", 'r') as h: 
+        DEBUG = h.read()
+except:
+    DEBUG = False
 
 def main():
     ##########################
     w_cam, h_cam = 640, 480
-    frameR = 100 # Frame Reduction
-    smoothening = 7
+    frameR = 60 # Frame Reduction
+    smoothening = 4
     #########################
     
     p_time = 0
@@ -26,6 +31,7 @@ def main():
     cap.set(4, h_cam)
     detector = ht.handDetector(max_hands=1)
     wScr, hScr = autopy.screen.size()
+
     if DEBUG:
         print(wScr, hScr)
     try:
@@ -57,6 +63,11 @@ def main():
                 clocY = plocY + (y3 - plocY) / smoothening
             
                 # 7. Move Mouse
+                wScr = int(wScr)
+                clocX = int(clocX)
+                clocY = int(clocY)
+                if DEBUG:
+                    print(wScr - clocX, clocY)
                 autopy.mouse.move(wScr - clocX, clocY)
                 if DEBUG:
                     cv2.circle(img, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
@@ -65,7 +76,7 @@ def main():
             # 8. Both Index and middle fingers are up : Clicking Mode
             if fingers[1] == 1 and fingers[2] == 1:
                 # 9. Find distance between fingers
-                length, img, lineInfo = detector.findDistance(8, 12, img)
+                length, img, lineInfo = detector.findDistance(8, 12, img, draw=DEBUG)
                 if DEBUG:
                     print(length)
                 # 10. Click mouse if distance short
@@ -75,7 +86,11 @@ def main():
                             15, (0, 255, 0), cv2.FILLED)
                     autopy.mouse.click()
                     fingers[1] = 0
-                    fingers[2] = 0          
+                    fingers[2] = 0   
+                    #time.sleep(0.1)
+                    #autopy.mouse.move(wScr - clocX, clocY)
+                    
+       
             # 11. Frame Rate
             c_time = time.time()
             fps = 1 / (c_time - p_time)
