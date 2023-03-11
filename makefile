@@ -1,12 +1,7 @@
-.PHONY: build
-build: # Build python venv with deps
-	scripts/build.sh
+.PHONY: run
+run: # start all the good stuff
+	scripts/run.sh
 
 .PHONY: clean
-clean: # Cleanup venv build
-	scripts/cleanup.sh
-
-.PHONY: run
-run: # Run main script
-	scripts/run.py
-
+clean: # detect OS, install deps
+	scripts/clean.sh
